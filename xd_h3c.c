@@ -177,6 +177,10 @@ int main(int argc,char *argv[])
 				strcpy(devicename,argv[optind]);
 			}
 			break;
+			//DHCP
+			case 'd':
+				dhcp=DHCP;
+				break;
 			//帮助信息
 			case 'h':
 				print_help();
@@ -218,6 +222,7 @@ void print_help()
 	printf("\t-u\t--username\t\t参数为用户名\n"); 
 	printf("\t-p\t--password\t\t参数为密码\n");
 	printf("\t-n\t--device\t\t参数为网卡名，默认为'eth0'\n");
+	printf("\t-d\t--dhcp\t\t\t调用dhclient，默认为不调用\n");
 	printf("\t-h\t--help\t\t\t使用方法\n");
 	printf("\t-l\t--logoff\t\t注销\n");
 	printf("举例:\n");

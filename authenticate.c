@@ -184,7 +184,8 @@ int Authentication(char *UserName, char *Password, char *DeviceName)
 						adhandle, ethhdr, captured);
 				break;
 			case SUCCESS: /* 成功包 */
-				RunDHCP(DeviceName);
+				if(dhcp)
+					RunDHCP(DeviceName);
 				break;
 			case FAILURE: /* 失败包 */
 				printf("[%d] Server: 认证失败。\n", (EAP_ID)captured[19]);
