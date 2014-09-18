@@ -69,11 +69,12 @@ int main(int argc,char *argv[])
 		{"username", 0, NULL, 'u'},
 		{"password", 0, NULL, 'p'},
 		{"device", 0, NULL, 'n'},
+		{"dhcp", 0, NULL, 'd'},
 		{"logoff", 0, NULL, 'l'},       
 		{ NULL, 0, NULL, 0},
 	};
 	//命令行包含的选项
-	static const char *options="u::p::n::l::h";
+	static const char *options="u::p::n::d::l::h";
 	if(argc==1)
 	{
 		print_help();
