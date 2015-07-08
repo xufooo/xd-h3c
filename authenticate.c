@@ -15,8 +15,13 @@ void RunDHCP(const char *DeviceName)
 {
 	char cmd[32];
 	fprintf(stdout, "------开始运行DHCP服务获取IP------\n");
-	//TODO: detect the existing dhclient and exit them
-	strcpy(cmd, "sudo dhclient ");
+//	TODO: detect the existing dhclient and exit them
+	strcpy(cmd, "sudo dhcpcd -k ");//15 chars
+	strcat(cmd, DeviceName);
+	strcat(cmd, " ");
+	system(cmd);
+//	strcpy(cmd, "sudo dhclient ");
+	strcpy(cmd, "sudo dhcpcd -w ");//also 15 chars, safe!
 	strcat(cmd, DeviceName);
 	strcat(cmd, " &");
 	system(cmd);
@@ -553,9 +558,11 @@ int GetNetState(char *devicename)
 	FILE *read_fp;
 	int chars_read, ret;
 	char command[100], buffer[BUFSIZ];
-	strcpy(command,"sudo ifconfig ");
+//	strcpy(command,"sudo ifconfig ");
+	strcpy(command,"ip link show ");
 	strcat(command, devicename);
-	strcat(command," | grep RUNNING");
+//	strcat(command," | grep RUNNING");
+	strcat(command," | grep UP");
 	memset(buffer, 0, BUFSIZ);
 
 	read_fp = popen(command , "r");
