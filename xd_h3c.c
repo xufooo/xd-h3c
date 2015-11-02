@@ -11,10 +11,10 @@
 
 #define ECHOFLAGS (ECHO | ECHOE | ECHOK | ECHONL)
 
-	const char DefaultDevName[] = "eth0";
-	char *username;
-	char *password;
-	char *devicename;
+    const char DefaultDevName[] = "eth0";
+    char *username;
+    char *password;
+    char *devicename;
 
 //检测进程
 int checkprocess();
@@ -27,14 +27,14 @@ void getDevice();
 
 void exit_handler(int signo, siginfo_t * info, void * p)
 {
-	if(signo == SIGINT)
-	{
-		printf("\n接收到退出信号，准备退出。\n");
-		if(devicename != NULL)
-			SendLogoffPkt(devicename);
-		printf("bye bye!\n");
-		exit(0);
-	}
+    if(signo == SIGINT)
+    {
+        printf("\n接收到退出信号，准备退出。\n");
+        if(devicename != NULL)
+            SendLogoffPkt(devicename);
+        printf("bye bye!\n");
+        exit(0);
+    }
 }
 struct sigaction act;
 //主函数
@@ -105,7 +105,7 @@ int main(int argc,char *argv[])
 					username = (char*)malloc(100);
 					strcpy(username, argv[optind]);
 					//clean argv[]
-					strcpy(argv[optind], "*****");
+                    strncpy(argv[optind], "*****", strlen(argv[optind]));
 					getPassword();
 					getDevice();
 				}
@@ -114,7 +114,7 @@ int main(int argc,char *argv[])
 					username = (char *)malloc(100);
 					strcpy(username, argv[optind]);
 					//clean argv[]
-					strcpy(argv[optind], "*****");
+                    strncpy(argv[optind], "*****", strlen(argv[optind]));
 				}
 			}
 			break;
@@ -141,7 +141,7 @@ int main(int argc,char *argv[])
 				password=(char *)malloc(100);
 				strcpy(password,argv[optind]);
 				//clean argv[]
-				strcpy(argv[optind], "*");
+                strncpy(argv[optind], "*****", strlen(argv[optind]));
 				getDevice();
 			}
 			else
@@ -149,7 +149,7 @@ int main(int argc,char *argv[])
 				password = (char *)malloc(100);
 				strcpy(password,argv[optind]);
 				//clean argv[]
-				strcpy(argv[optind], "*****");
+                strncpy(argv[optind], "*****", strlen(argv[optind]));
 		}
 			break;
 			//网卡名称 
@@ -235,102 +235,102 @@ void print_help()
 //用户未输入用户名的处理
 void getUserName()
 {
-	char temp[100];
-	username=(char *)malloc(100);
+    char temp[100];
+    username = (char *)malloc(100);
 GetUserName:
-	printf("请输入用户名：");
-	setbuf(stdin,NULL);	//清除缓冲区(Linux),Windows下可以使用fflush或者rewind。 
-	fgets(temp,sizeof(char)*100,stdin);
-	if(strlen(temp)==0||(strlen(temp)==1&&temp[0]=='\n'))
-	{
-		printf("用户名不能为空！\n");
-		goto GetUserName;
-	}
-	else
-		memcpy(username,temp,strlen(temp)-1);
+    printf("请输入用户名：");
+    setbuf(stdin,NULL);    //清除缓冲区(Linux),Windows下可以使用fflush或者rewind
+    fgets(temp,sizeof(char)*100,stdin);
+    if(strlen(temp)==0||(strlen(temp)==1&&temp[0]=='\n'))
+    {
+        printf("用户名不能为空！\n");
+        goto GetUserName;
+    }
+    else
+        memcpy(username,temp,strlen(temp)-1);
 }
 //用户未输入密码的处理
 void getPassword()
 {
-	char temp[100];
-	password = (char *)malloc(100);
-	printf("请输入密码：");
-	setbuf(stdin,NULL);//清除缓冲区(Linux),Windows下可以使用fflush或者rewind。
-	//关闭回显
-	set_disp_mode(STDIN_FILENO,0);
+    char temp[100];
+    password = (char *)malloc(100);
+    printf("请输入密码：");
+    setbuf(stdin,NULL);    //清除缓冲区(Linux),Windows下可以使用fflush或者rewind
+    //关闭回显
+    set_disp_mode(STDIN_FILENO,0);
 GetPassword:
-	fgets(temp,sizeof(char)*100,stdin);
-	printf("\n");
-	if(strlen(temp)==0 || (strlen(temp)==1&&temp[0]=='\n'))
-	{
-		printf("密码不能为空！\n");
-		goto GetPassword;
-	}
-	else
-		memcpy(password,temp,strlen(temp)-1);
-	set_disp_mode(STDIN_FILENO,1);
+    fgets(temp,sizeof(char)*100,stdin);
+    printf("\n");
+    if(strlen(temp)==0 || (strlen(temp)==1&&temp[0]=='\n'))
+    {
+        printf("密码不能为空！\n");
+        goto GetPassword;
+    }
+    else
+        memcpy(password,temp,strlen(temp)-1);
+    set_disp_mode(STDIN_FILENO,1);
 }
 //用户未输入网卡名称的处理
 void getDevice()
 {
-	char *temp;
-	temp = (char *)malloc(100);
-	devicename = (char *)malloc(100);
-	printf("请输入网卡名称（默认为eth0）：");
-	setbuf(stdin, NULL); //清除缓冲区(Linux),Windows下可以使用fflush或者rewind。
-	fgets(temp,sizeof(char)*100,stdin);
-	if(strlen(temp)==0|| (strlen(temp)==1&&temp[0]=='\n') )
-		strcpy(devicename,DefaultDevName);
-	else
-		memcpy(devicename,temp,strlen(temp)-1);
+    char *temp;
+    temp = (char *)malloc(100);
+    devicename = (char *)malloc(100);
+    printf("请输入网卡名称（默认为eth0）：");
+    setbuf(stdin, NULL); //清除缓冲区(Linux),Windows下可以使用fflush或者rewind
+    fgets(temp,sizeof(char)*100,stdin);
+    if(strlen(temp)==0|| (strlen(temp)==1&&temp[0]=='\n') )
+        strcpy(devicename,DefaultDevName);
+    else
+        memcpy(devicename,temp,strlen(temp)-1);
 }
 //取消密码回显功能
 int set_disp_mode(int fd, int option)
 {
-	int err;
-	struct termios term;
-	if(tcgetattr(fd, &term)==-1) {
-		perror("Cannot get the attribution of the terminal");
-		return 1;
-	}
-	if(option)
-		term.c_lflag |= ECHOFLAGS;
-	else
-		term.c_lflag &= ~ECHOFLAGS;
-	err=tcsetattr(fd,TCSAFLUSH,&term);
-	if(err==-1 && err==EINTR) {
-		perror("Cannot set the attribution of the terminal");
-		return 1;
-	}
-	return 0;
+    int err;
+    struct termios term;
+    if(tcgetattr(fd, &term)==-1) {
+        perror("Cannot get the attribution of the terminal");
+        return 1;
+    }
+    if(option)
+        term.c_lflag |= ECHOFLAGS;
+    else
+        term.c_lflag &= ~ECHOFLAGS;
+    err=tcsetattr(fd,TCSAFLUSH,&term);
+    if(err==-1 && errno==EINTR) {
+        perror("Cannot set the attribution of the terminal");
+        return 1;
+    }
+    return 0;
 }
 //检测是否已经登录
 int checkprocess()
 {
-	FILE *read_fp;
-	char command[]="ps -e | grep -w xdh3c";
-	int count=0;
-	char ch;
-	read_fp = popen(command, "r");
-	if(read_fp != NULL)
-	{
-		while(fgetc(read_fp)!=EOF)
-		{
-			fseek(read_fp, sizeof(char), 1);
-			ch = fgetc(read_fp);
-			if(ch=='\n')
-				count++;
-		}
-		pclose(read_fp);
-		if(count>1)
-			return -1;
-		else
-			return 1;
-	}
-	else
-	{
-		printf("Shell command error!\n");
-		exit(1);
-	}
+    FILE *read_fp;
+    char command[]="ps -e | grep -w xdh3c";
+    int count=0;
+    char ch;
+    read_fp = popen(command, "r");
+    if(read_fp != NULL)
+    {
+        while(fgetc(read_fp)!=EOF)
+        {
+            fseek(read_fp, sizeof(char), 1);
+            ch = fgetc(read_fp);
+            if(ch=='\n')
+                count++;
+        }
+        pclose(read_fp);
+        if(count>1)
+            return -1;
+        else
+            return 1;
+    }
+    else
+    {
+        printf("Shell command error!\n");
+        exit(1);
+    }
 }
 
